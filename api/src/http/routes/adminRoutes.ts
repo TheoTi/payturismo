@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { AdminController } from "../controllers/AdminController";
+import { adminController } from "../controllers/AdminController";
 
 const adminRoutes = Router();
 
-adminRoutes.get("/agency/:", AdminController.listAgencies);
+adminRoutes.get("/agency/:", adminController.listAgencies);
+adminRoutes.get("/agency/:id/:", adminController.findAgencyById);
 
 export { adminRoutes };

@@ -4,9 +4,15 @@ import { dbConnection } from "..";
 
 class Repository implements IAgencyRepository<Agency> {
   async findAll() {
-    const agencies = await dbConnection.agency.findMany();
+    return dbConnection.agency.findMany();
+  }
 
-    return agencies;
+  async findById(id: string) {
+    return dbConnection.agency.findFirst({
+      where: {
+        id,
+      },
+    });
   }
 }
 
