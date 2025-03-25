@@ -4,6 +4,8 @@ import { z } from "zod";
 import { ListAgencies } from "../../usecases/agencies/ListAgencies";
 import { FindAgencyById } from "../../usecases/agencies/FindAgencyById";
 import { DeleteAgency } from "../../usecases/agencies/DeleteAgency";
+import { CreateAgency } from "../../usecases/agencies/CreateAgency";
+import { CreateAgencyDTO } from "../../dtos/ICreateAgencyDTO";
 
 export class AdminController {
   async listAgencies(req: Request, res: Response) {
@@ -64,6 +66,18 @@ export class AdminController {
     const agency = await deleteAgencyUseCase.execute(id);
 
     res.sendStatus(204);
+  }
+
+  async createAgency(req: Request, res: Response) {
+    const { body } = req;
+
+    const createAgencyUseCase = new CreateAgency();
+
+    const agency = await createAgencyUseCase.execute(body as CreateAgencyDTO);
+
+    res.status(201).json({
+      data: agency,
+    });
   }
 }
 

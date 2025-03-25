@@ -1,5 +1,5 @@
-import { Agency } from "@prisma/client";
-import { IAgencyRepository } from "../../interfaces/IAgencyRepository";
+import { Agency, Prisma } from "@prisma/client";
+import { IAgencyRepository } from "../../interfaces/repository/IAgencyRepository";
 import { dbConnection } from "..";
 
 class Repository implements IAgencyRepository<Agency> {
@@ -29,6 +29,12 @@ class Repository implements IAgencyRepository<Agency> {
         },
       });
     }
+  }
+
+  async create(dto: Prisma.AgencyCreateInput) {
+    return dbConnection.agency.create({
+      data: dto,
+    });
   }
 }
 
