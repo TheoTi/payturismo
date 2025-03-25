@@ -9,6 +9,72 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @db.VarChar(26)
+  email           String   @unique
+  passwordHash    String   @map("password_hash")
+  role            Role     @default(analyst)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
+  isActive        Boolean  @default(true) @map("is_active")
+  agencies        Agency[] @relation("created_agencies")
+  updatedAgencies Agency[] @relation("updated_agencies")
+
+  @@map("users")
+}
+
+model Agency {
+  id                    String       @id @db.VarChar(26)
+  fantasyName           String       @map("fantasy_name")
+  corporateName         String       @map("corporate_name")
+  cnpj                  String       @unique
+  stateRegistration     String?      @map("state_registration")
+  municipalRegistration String?      @map("municipal_registration")
+  status                AgencyStatus @default(pending)
+  foundationDate        DateTime?    @map("foundation_date")
+  email                 String
+  phone                 String
+  website               String?
+  createdAt             DateTime     @default(now()) @map("created_at")
+  updatedAt             DateTime     @default(now()) @updatedAt @map("updated_at")
+  createdBy             User         @relation("created_agencies", fields: [createdById], references: [id])
+  createdById           String       @map("created_by") @db.VarChar(26)
+  updatedBy             User?        @relation("updated_agencies", fields: [updatedById], references: [id])
+  updatedById           String?      @map("updated_by") @db.VarChar(26)
+  addresses             Address[]
+
+  @@map("agencies")
+}
+
+model Address {
+  id           String  @id @db.VarChar(26)
+  street       String
+  number       String
+  complement   String?
+  neighborhood String
+  city         String
+  state        String  @db.VarChar(2)
+  zipCode      String  @map("zip_code") @db.VarChar(9)
+  country      String  @default("Brasil")
+  isMain       Boolean @default(true) @map("is_main")
+  agency       Agency  @relation(fields: [agencyId], references: [id])
+  agencyId     String  @map("agency_id") @db.VarChar(26)
+
+  @@map("addresses")
+}
+
+enum Role {
+  admin
+  analyst
+}
+
+enum AgencyStatus {
+  active
+  inactive
+  pending
+  suspended
 }
