@@ -6,19 +6,23 @@
   "scripts": {
     "dev": "concurrently \"npm:tsc:watch\" \"npm:start\"",
     "tsc:watch": "tsc --watch",
-    "start": "node --watch ./dist/server.js"
+    "start": "node --watch ./dist/server.js",
+    "prisma:migrate": "prisma migrate dev"
   },
   "dependencies": {
-    "@prisma/client": "6.5.0",
+    "@prisma/client": "^6.5.0",
     "concurrently": "^9.1.2",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-async-errors": "^3.1.1",
-    "prisma": "^6.5.0"
+    "lodash": "^4.17.21",
+    "prisma": "^6.5.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/express": "^5.0.1",
+    "@types/lodash": "^4.17.16",
     "@types/node": "^22.13.13",
     "typescript": "^5.8.2"
   }
