@@ -15,13 +15,12 @@ export class Agency implements AgencySchema {
   public phone: string;
   public website?: string;
   public createdAt: Date;
-  public updatedAt: Date;
+  public updatedAt?: Date;
 
   constructor(data: AgencySchema) {
     this.id = data.id || this.generateUlid();
     this.status = "pending";
     this.createdAt = new Date();
-    this.updatedAt = new Date();
     this.email = "";
     this.phone = "";
     this.cnpj = "";
