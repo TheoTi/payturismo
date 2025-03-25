@@ -1,4 +1,4 @@
-import { Prisma, User } from "@prisma/client";
+import { $Enums, Prisma, User } from "@prisma/client";
 import { IUserRepository } from "../../interfaces/repository/IUserRepository";
 import { dbConnection } from "..";
 
@@ -12,6 +12,14 @@ class Repository implements IUserRepository<User> {
       where: {
         id,
       },
+    });
+  }
+
+  async findOneBy<K extends Partial<Record<keyof Prisma.UserWhereInput, any>>>(
+    search: K
+  ) {
+    return dbConnection.user.findFirst({
+      where: search,
     });
   }
 

@@ -6,6 +6,8 @@ import { ICreateUserDTO } from "../../dtos/ICreateUserDTO";
 import { DeleteUser } from "../../usecases/user/DeleteUser";
 import { FindUserById } from "../../usecases/user/FindUserById";
 import { ListUsers } from "../../usecases/user/ListUser";
+import { IAuthenticateUserDTO } from "../../dtos/IAuthenticateUserDTO";
+import { AuthenticateUser } from "../../usecases/user/AuthenticateUser";
 
 export class UserController {
   async listUsers(req: Request, res: Response) {
@@ -77,6 +79,18 @@ export class UserController {
 
     res.status(201).json({
       data: user,
+    });
+  }
+
+  async login(req: Request, res: Response) {
+    const body = req.body as IAuthenticateUserDTO;
+
+    const authenticateUserUseCase = new AuthenticateUser();
+
+    const authentication = await authenticateUserUseCase.execute(body);
+
+    res.status(200).json({
+      data: authentication,
     });
   }
 }
