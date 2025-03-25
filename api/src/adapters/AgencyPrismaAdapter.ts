@@ -35,4 +35,21 @@ export class AgencyPrismaAdapter {
       website: prismaAgency?.website || undefined,
     });
   }
+
+  public static toPrismaUpdate(
+    agency: Partial<Agency>
+  ): Prisma.AgencyUpdateInput {
+    return {
+      fantasyName: agency?.fantasyName,
+      corporateName: agency?.corporateName,
+      cnpj: agency?.cnpj,
+      stateRegistration: agency?.stateRegistration,
+      municipalRegistration: agency?.municipalRegistration,
+      status: agency?.status,
+      foundationDate: agency?.foundationDate,
+      email: agency?.email,
+      phone: agency?.phone,
+      website: agency?.website,
+    };
+  }
 }
