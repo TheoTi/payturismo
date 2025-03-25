@@ -14,6 +14,22 @@ class Repository implements IAgencyRepository<Agency> {
       },
     });
   }
+
+  async delete(id: string) {
+    const agency = await dbConnection.agency.findFirst({
+      where: {
+        id,
+      },
+    });
+
+    if (agency) {
+      await dbConnection.agency.delete({
+        where: {
+          id,
+        },
+      });
+    }
+  }
 }
 
 export const AgencyRepository = new Repository();

@@ -5,5 +5,6 @@ const adminRoutes = Router();
 
 adminRoutes.get("/agency/:", adminController.listAgencies);
 adminRoutes.get("/agency/:id/:", adminController.findAgencyById);
+adminRoutes.delete("/agency/:id/:", adminController.deleteAgency);
 
 export { adminRoutes };
