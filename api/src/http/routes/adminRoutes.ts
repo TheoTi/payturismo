@@ -2,6 +2,7 @@ import { Router } from "express";
 import { adminController } from "../controllers/AdminController";
 import { validateRequest } from "../middlewares/validateRequest";
 import { CreateAgencyRequestSchema } from "../../validators/createAgencyZodSchema";
+import { updateAgencyRequestSchema } from "../../validators/updateAgencyZodSchema";
 
 const adminRoutes = Router();
 
@@ -12,6 +13,11 @@ adminRoutes.post(
   "/agency/:",
   validateRequest(CreateAgencyRequestSchema),
   adminController.createAgency
+);
+adminRoutes.put(
+  "/agency/:id/:",
+  validateRequest(updateAgencyRequestSchema),
+  adminController.updateAgency
 );
 
 export { adminRoutes };

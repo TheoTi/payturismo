@@ -1,26 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { merge } from "lodash";
-import { z } from "zod";
-
-export const Schema = z.object({
-  id: z.string().optional(), // ULID de 26 caracteres
-  fantasyName: z.string().min(3).max(255),
-  corporateName: z.string().min(3).max(255),
-  cnpj: z.string().regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/),
-  stateRegistration: z.string().max(20).optional(),
-  municipalRegistration: z.string().max(20).optional(),
-  status: z
-    .enum(["active", "inactive", "pending", "suspended"])
-    .default("pending"),
-  foundationDate: z.coerce.date().optional(),
-  email: z.string().email(),
-  phone: z.string().min(8).max(20),
-  website: z.string().url().optional(),
-});
-
-const CreateAgencySchema = Schema.omit({ id: true });
-export type AgencySchema = z.infer<typeof Schema>;
-export type CreateAgencyInput = z.infer<typeof CreateAgencySchema>;
+import { AgencySchema } from "../validators/createAgencyZodSchema";
 
 export class Agency implements AgencySchema {
   public id: string;
@@ -58,7 +38,7 @@ export class Agency implements AgencySchema {
   }
 
   private validate(): void {
-    const result = Schema.safeParse(this);
+    const result = AgencySchema.safeParse(this);
 
     if (!result.success) {
       const errors = result.error.errors.map((err) => ({

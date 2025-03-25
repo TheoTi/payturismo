@@ -36,6 +36,15 @@ class Repository implements IAgencyRepository<Agency> {
       data: dto,
     });
   }
+
+  async update(id: string, dto: Prisma.AgencyUpdateInput) {
+    return dbConnection.agency.update({
+      where: {
+        id,
+      },
+      data: dto,
+    });
+  }
 }
 
 export const AgencyRepository = new Repository();
