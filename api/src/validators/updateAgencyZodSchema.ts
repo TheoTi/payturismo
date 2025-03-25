@@ -25,6 +25,6 @@ export const updateAgencyRequestSchema = z.object({
   body: UpdateAgencySchema,
   query: z.any(),
   params: z.object({
-    id: z.string().min(1),
+    id: z.string().min(2),
   }),
 });
