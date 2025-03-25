@@ -5,7 +5,7 @@ import { ListAgencies } from "../../usecases/agencies/ListAgencies";
 import { FindAgencyById } from "../../usecases/agencies/FindAgencyById";
 import { DeleteAgency } from "../../usecases/agencies/DeleteAgency";
 import { CreateAgency } from "../../usecases/agencies/CreateAgency";
-import { CreateAgencyDTO } from "../../dtos/ICreateAgencyDTO";
+import { ICreateAgencyDTO } from "../../dtos/ICreateAgencyDTO";
 import { IUpdateAgencyDTO } from "../../dtos/IUpdateAgencyDTO";
 import { UpdateAgency } from "../../usecases/agencies/UpdateAgency";
 
@@ -75,7 +75,7 @@ export class AdminController {
 
     const createAgencyUseCase = new CreateAgency();
 
-    const agency = await createAgencyUseCase.execute(body as CreateAgencyDTO);
+    const agency = await createAgencyUseCase.execute(body as ICreateAgencyDTO);
 
     res.status(201).json({
       data: agency,

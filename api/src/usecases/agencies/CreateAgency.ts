@@ -1,10 +1,10 @@
 import { AgencyPrismaAdapter } from "../../adapters/AgencyPrismaAdapter";
 import { AgencyRepository } from "../../db/repositories/AgencyRepository";
-import { CreateAgencyDTO } from "../../dtos/ICreateAgencyDTO";
+import { ICreateAgencyDTO } from "../../dtos/ICreateAgencyDTO";
 import { Agency } from "../../entities/Agency";
 
 export class CreateAgency {
-  async execute(dto: CreateAgencyDTO) {
+  async execute(dto: ICreateAgencyDTO) {
     const agencyEntity = new Agency(dto);
     const prismaCreateInput = AgencyPrismaAdapter.toPrisma(agencyEntity);
 
