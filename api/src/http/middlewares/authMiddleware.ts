@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import { userRepository } from "../../db/repositories/UserRepository";
 import { z } from "zod";
@@ -16,16 +16,20 @@ interface JwtPayload {
   role?: string;
 }
 
-export const authMiddleware = (roles?: Array<"admin" | "analyst">) => {
+export const authMiddleware = (
+  roles?: Array<"admin" | "analyst">
+): RequestHandler => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const headerResult = AuthHeaderSchema.safeParse(req.headers);
 
       if (!headerResult.success) {
-        return res.status(401).json({
+        res.status(401).json({
           error: "Invalid authorization header",
           details: headerResult.error.format(),
         });
+
+        return;
       }
 
       const token = headerResult.data.authorization.split(" ")[1];
@@ -35,13 +39,15 @@ export const authMiddleware = (roles?: Array<"admin" | "analyst">) => {
       const user = await userRepository.findById(decoded.userId);
 
       if (!user) {
-        return res.status(401).json({
+        res.status(401).json({
           error: "Invalid or inactive user account",
         });
+
+        return;
       }
 
       if (roles && !roles.includes(user.role)) {
-        return res.status(403).json({
+        res.status(403).json({
           error: "Insufficient permissions",
           requiredRoles: roles,
           userRole: user.role,
@@ -54,28 +60,32 @@ export const authMiddleware = (roles?: Array<"admin" | "analyst">) => {
         role: user.role,
       };
 
-      return next();
+      next();
     } catch (error) {
       console.error("Authentication error:", error);
 
       if (error instanceof jwt.TokenExpiredError) {
-        return res.status(401).json({
+        res.status(401).json({
           error: "Token expired",
           solution: "Refresh your authentication token",
         });
-      }
 
-      if (error instanceof jwt.JsonWebTokenError) {
-        return res.status(401).json({
+        return;
+      } else if (error instanceof jwt.JsonWebTokenError) {
+        res.status(401).json({
           error: "Invalid token",
           details: error.message,
         });
-      }
 
-      return res.status(500).json({
-        error: "Authentication failed",
-        details: error instanceof Error ? error.message : "Unknown error",
-      });
+        return;
+      } else {
+        res.status(500).json({
+          error: "Authentication failed",
+          details: error instanceof Error ? error.message : "Unknown error",
+        });
+
+        return;
+      }
     }
   };
 };
