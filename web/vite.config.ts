@@ -14,4 +14,8 @@ export default defineConfig({
       "@views": path.resolve(__dirname, "src", "views"),
     },
   },
+  server: {
+    open: true,
+    host: true,
+  },
 });
