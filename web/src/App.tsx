@@ -1,5 +1,5 @@
 function App() {
-  return <h1>hello payturismo</h1>;
+  return <h1 className="text-primary font-bold text-2xl">hello payturismo</h1>;
 }
 
 export default App;
