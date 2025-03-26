@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "concurrently \"npm:tsc:watch\" \"npm:start\"",
+    "dev": "concurrently \"npm:prisma:migrate\" \"npm:tsc:watch\" \"npm:start\"",
     "tsc:watch": "tsc --watch",
     "start": "node --watch ./dist/server.js",
     "prisma:migrate": "prisma migrate dev"
