@@ -23,6 +23,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/views/components/ui/form";
+import { Loader2 } from "lucide-react";
+import { useAuth } from "@/app/hooks/useAuth";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -46,8 +49,29 @@ export function SignInForm({
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  const { signIn } = useAuth();
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      await signIn(values);
+    } catch (error: any) {
+      toast.error("Failed to sign in", {
+        description: error?.message,
+      });
+    }
+  }
+
+  function SignInButton() {
+    if (form.formState.isSubmitting) {
+      return (
+        <Button disabled className="gap-1">
+          <Loader2 className="animate-spin h-[1.2rem] w-[1.2rem]" />
+          Please wait
+        </Button>
+      );
+    }
+
+    return <Button className="w-full">Login</Button>;
   }
 
   return (
@@ -120,9 +144,7 @@ export function SignInForm({
                       )}
                     />
                   </div>
-                  <Button type="submit" className="w-full">
-                    Login
-                  </Button>
+                  <SignInButton />
                 </div>
                 <div className="text-center text-sm">
                   Don&apos;t have an account?{" "}
