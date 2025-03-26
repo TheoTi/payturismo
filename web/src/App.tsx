@@ -1,5 +1,12 @@
+import { BrowserRouter } from "react-router-dom";
+import { Router } from "./app/Router";
+
 function App() {
-  return <h1 className="text-primary font-bold text-2xl">hello payturismo</h1>;
+  return (
+    <BrowserRouter>
+      <Router />
+    </BrowserRouter>
+  );
 }
 
 export default App;
