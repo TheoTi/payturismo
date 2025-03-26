@@ -6,7 +6,12 @@ import { storageKeys } from "./app/config/storageKeys";
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey={storageKeys.theme}>
-      <BrowserRouter>
+      <BrowserRouter
+        future={{
+          v7_startTransition: false,
+          v7_relativeSplatPath: false,
+        }}
+      >
         <Router />
       </BrowserRouter>
     </ThemeProvider>
