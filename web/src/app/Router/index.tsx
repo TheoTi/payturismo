@@ -5,9 +5,12 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { routes } from "./routes";
 import { Fallback } from "@/views/layout/Fallback";
 import { AuthGuard } from "./AuthGuard";
+import { SidebarLayout } from "@/views/layout/Sidebar";
 
 const { SignIn } = lazyLoad(() => import("@/views/pages/SignIn"));
 const { Agencies } = lazyLoad(() => import("@/views/pages/Agencies"));
+const { AgencyDetail } = lazyLoad(() => import("@/views/pages/AgencyDetail"));
+const { Dashboard } = lazyLoad(() => import("@/views/pages/Dashboard"));
 
 export function Router() {
   const location = useLocation();
@@ -39,11 +42,23 @@ export function Router() {
       <Suspense fallback={<Fallback />}>
         <Routes location={item}>
           <Route element={<AuthGuard isPrivate />}>
-            <Route
-              path="/"
-              element={<Navigate to={routes.agencies} replace />}
-            />
-            <Route path={routes.agencies} element={<Agencies />} />
+            <Route element={<SidebarLayout />}>
+              <Route
+                path="/"
+                element={<Navigate to={routes.dashboard} replace />}
+              />
+              <Route path={routes.dashboard} element={<Dashboard />} />
+
+              <Route path={routes.agencies}>
+                <Route index element={<Agencies />} />
+                <Route path="new" element={<Agencies />} />
+              </Route>
+
+              <Route path={routes.agencyDetail}>
+                <Route index element={<AgencyDetail />} />
+                <Route path="edit" element={<AgencyDetail />} />
+              </Route>
+            </Route>
           </Route>
 
           <Route element={<AuthGuard isPrivate={false} />}>

@@ -1,76 +1,97 @@
-import { storageKeys } from '@/app/config/storageKeys'
-import { APIError } from '@/app/errors/APIError'
-import axios, { AxiosHeaders, type AxiosRequestConfig } from 'axios'
+import { storageKeys } from "@/app/config/storageKeys";
+import { APIError } from "@/app/errors/APIError";
+import axios, { AxiosHeaders, type AxiosRequestConfig } from "axios";
 
 export class HttpClient {
-	baseURL: string
+  baseURL: string;
 
-	constructor(baseURL: string) {
-		this.baseURL = baseURL
-	}
+  constructor(baseURL: string) {
+    this.baseURL = baseURL;
+  }
 
-	async post<Response = any, Body = any>(
-		path: string,
-		options?: AxiosRequestConfig<Body> | undefined,
-	): Promise<Response> {
-		return this.makeRequest(path, {
-			method: 'POST',
-			data: options?.data,
-			headers: options?.headers,
-		})
-	}
+  async delete<Response = any, Body = any>(
+    path: string,
+    options?: AxiosRequestConfig<Body> | undefined
+  ): Promise<Response> {
+    return this.makeRequest(path, {
+      method: "DELETE",
+      headers: options?.headers,
+    });
+  }
 
-	async get<Response = any>(
-		path: string,
-		options?: AxiosRequestConfig | undefined,
-	): Promise<Response> {
-		return this.makeRequest(path, {
-			method: 'GET',
-			headers: options?.headers,
-		})
-	}
+  async post<Response = any, Body = any>(
+    path: string,
+    options?: AxiosRequestConfig<Body> | undefined
+  ): Promise<Response> {
+    return this.makeRequest(path, {
+      method: "POST",
+      data: options?.data,
+      headers: options?.headers,
+    });
+  }
 
-	async makeRequest<Response = any, Body = any>(
-		path: string,
-		options: AxiosRequestConfig<Body> | undefined,
-	): Promise<Response> {
-		const headers = new AxiosHeaders()
+  async put<Response = any, Body = any>(
+    path: string,
+    options?: AxiosRequestConfig<Body> | undefined
+  ): Promise<Response> {
+    return this.makeRequest(path, {
+      method: "PUT",
+      data: options?.data,
+      headers: options?.headers,
+    });
+  }
 
-		if (options?.data) {
-			headers.set('Content-Type', 'application/json')
-		}
+  async get<Response = any>(
+    path: string,
+    options?: AxiosRequestConfig | undefined
+  ): Promise<Response> {
+    return this.makeRequest(path, {
+      method: "GET",
+      headers: options?.headers,
+    });
+  }
 
-		if (options?.headers) {
-			for (const [header, value] of Object.entries(options.headers)) {
-				headers.set(header, value)
-			}
-		}
+  async makeRequest<Response = any, Body = any>(
+    path: string,
+    options: AxiosRequestConfig<Body> | undefined
+  ): Promise<Response> {
+    const headers = new AxiosHeaders();
 
-		const httpClient = axios.create()
+    if (options?.data) {
+      headers.set("Content-Type", "application/json");
+    }
 
-		httpClient.interceptors.request.use((config) => {
-			const accessToken = localStorage.getItem(storageKeys.accessToken)
+    if (options?.headers) {
+      for (const [header, value] of Object.entries(options.headers)) {
+        headers.set(header, value);
+      }
+    }
 
-			if (accessToken) {
-				config.headers.set('Authorization', `Bearer ${accessToken}`)
-			}
+    const httpClient = axios.create();
 
-			return config
-		})
+    httpClient.interceptors.request.use((config) => {
+      const accessToken = localStorage.getItem(storageKeys.accessToken);
 
-		const response = await httpClient.request<Response>({
-			baseURL: `${this.baseURL}${path}`,
-			data: options?.data,
-			method: options?.method,
-			headers: headers,
-		})
+      if (accessToken) {
+        config.headers.set("Authorization", `Bearer ${accessToken}`);
+      }
 
-		const { status, data } = response
+      return config;
+    });
 
-		if (status < 200 || status > 399) {
-			throw new APIError(response, data)
-		}
+    const response = await httpClient.request<Response>({
+      baseURL: `${this.baseURL}${path}`,
+      data: options?.data,
+      method: options?.method,
+      headers: headers,
+    });
 
-		return data
-	}
+    const { status, data } = response;
+
+    if (status < 200 || status > 399) {
+      throw new APIError(response, data);
+    }
+
+    return data;
+  }
 }
