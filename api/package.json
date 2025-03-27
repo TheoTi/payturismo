@@ -7,7 +7,7 @@
     "dev": "concurrently \"npm:prisma:migrate\" \"npm:tsc:watch\" \"npm:start\"",
     "tsc:watch": "tsc --watch",
     "start": "node --watch ./dist/server.js",
-    "prisma:migrate": "prisma migrate dev"
+    "prisma:migrate": "prisma migrate dev --name init"
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
