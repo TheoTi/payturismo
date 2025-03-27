@@ -1,0 +1,15 @@
+{
+<<<<<<< HEAD
+  "hash": "b3d8c643",
+  "configHash": "2547dc21",
+  "lockfileHash": "69bf7f9c",
+  "browserHash": "1666798b",
+=======
+  "hash": "3cd62848",
+  "configHash": "2547dc21",
+  "lockfileHash": "c5d26404",
+  "browserHash": "2b54ae8d",
+>>>>>>> feat/payturismo-web
+  "optimized": {},
+  "chunks": {}
+}
