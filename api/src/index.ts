@@ -8,7 +8,6 @@ import cors from "cors";
 
 import { adminRoutes } from "./http/routes/adminRoutes";
 import { publicRoutes } from "./http/routes/publicRoutes";
-// import swaggerDocument from "./docs/openapi.yaml";
 
 const app = express();
 
