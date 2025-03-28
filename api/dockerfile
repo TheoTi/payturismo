@@ -2,26 +2,19 @@ FROM node:18-slim
 
 WORKDIR /usr/src/app
 
-# Instala dependências do sistema (incluindo OpenSSL)
 RUN apt-get update -y && \
     apt-get install -y openssl && \
     rm -rf /var/lib/apt/lists/*
 
-# Instala dependências do Node.js
 COPY package*.json ./
 RUN npm install
 
-# Instala Prisma globalmente
 RUN npm install -g prisma
 
-# Copia o resto dos arquivos
 COPY . .
 
-# Compila o projeto
 RUN npm run build
 
-# Expõe a porta
 EXPOSE 3333
 
-# Define o entrypoint para rodar as migrações antes de iniciar a aplicação
 ENTRYPOINT ["sh", "-c", "npx prisma migrate dev --name init && npm run prod"]
