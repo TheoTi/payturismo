@@ -6,7 +6,10 @@ import {
   useState,
 } from "react";
 import { storageKeys } from "../config/storageKeys";
-import AuthService, { type ISignInDTO } from "../services/AuthService";
+import AuthService, {
+  ISignUpDTO,
+  type ISignInDTO,
+} from "../services/AuthService";
 
 export type TUserRole = "admin" | "analyst";
 
@@ -20,6 +23,7 @@ interface IAuthContextValue {
   user: null | IAuthUser;
   signedIn: boolean;
   signIn(signInDTO: ISignInDTO): Promise<void>;
+  signUp(signUpDTO: ISignUpDTO): Promise<void>;
   signOut(): void;
 }
 
@@ -41,13 +45,19 @@ export function AuthProvider({ children }: PropsWithChildren) {
       password,
     });
 
-    console.log({ authentication });
-
     localStorage.setItem(storageKeys.accessToken, authentication.token);
     localStorage.setItem(storageKeys.user, JSON.stringify(authentication.user));
 
-    setUser(user);
+    setUser(authentication.user as IAuthUser);
     setSignedIn(true);
+  }, []);
+
+  const signUp = useCallback(async ({ email, password, role }: ISignUpDTO) => {
+    await AuthService.signUp({
+      email,
+      password,
+      role,
+    });
   }, []);
 
   const signOut = useCallback(() => {
@@ -62,9 +72,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
       signedIn,
       signIn,
       signOut,
+      signUp,
     }),
-    [user, signedIn, signIn, signOut]
+    [user, signedIn, signIn, signOut, signUp]
   );
+
+  console.log(value);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

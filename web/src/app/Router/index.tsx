@@ -7,7 +7,9 @@ import { Fallback } from "@/views/layout/Fallback";
 import { AuthGuard } from "./AuthGuard";
 import { SidebarLayout } from "@/views/layout/Sidebar";
 
+const { NotFound } = lazyLoad(() => import("@/views/pages/NotFound"));
 const { SignIn } = lazyLoad(() => import("@/views/pages/SignIn"));
+const { SignUp } = lazyLoad(() => import("@/views/pages/SignUp"));
 const { Agencies } = lazyLoad(() => import("@/views/pages/Agencies"));
 const { AgencyDetail } = lazyLoad(() => import("@/views/pages/AgencyDetail"));
 const { Dashboard } = lazyLoad(() => import("@/views/pages/Dashboard"));
@@ -63,7 +65,10 @@ export function Router() {
 
           <Route element={<AuthGuard isPrivate={false} />}>
             <Route path={routes.signIn} element={<SignIn />} />
+            <Route path={routes.signUp} element={<SignUp />} />
           </Route>
+
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </animated.div>

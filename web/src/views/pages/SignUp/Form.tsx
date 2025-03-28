@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 import { cn } from "@/app/lib/utils";
@@ -25,33 +25,50 @@ import {
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/app/hooks/useAuth";
 import { toast } from "sonner";
-import { UserSignInInput, userSignInSchema } from "@/app/schemas/user";
+import { UserSignUpInput, userSignUpSchema } from "@/app/schemas/user";
+import { ComponentPropsWithoutRef } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/views/components/ui/select";
+import { getUserRoleOptions } from "@/app/constants/userRole";
 
-export function SignInForm({
+export function SignUpForm({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
-  const form = useForm<z.infer<typeof userSignInSchema>>({
-    resolver: zodResolver(userSignInSchema),
+}: ComponentPropsWithoutRef<"div">) {
+  const form = useForm<z.infer<typeof userSignUpSchema>>({
+    resolver: zodResolver(userSignUpSchema),
     defaultValues: {
       email: "",
       password: "",
+      role: "analyst",
     },
   });
 
-  const { signIn } = useAuth();
+  const navigate = useNavigate();
+  const { signUp } = useAuth();
 
-  async function onSubmit(values: UserSignInInput) {
+  async function onSubmit(values: UserSignUpInput) {
     try {
-      await signIn(values);
+      await signUp(values);
+
+      toast.success("User successfully created. \nRedirecting to sign in...");
+
+      navigate(routes.signIn);
     } catch (error: any) {
-      toast.error("Failed to sign in", {
+      toast.error("Failed to sign up", {
         description: error?.message,
       });
     }
   }
 
-  function SignInButton() {
+  function SignUpButton() {
     if (form.formState.isSubmitting) {
       return (
         <Button disabled className="gap-1">
@@ -61,17 +78,15 @@ export function SignInForm({
       );
     }
 
-    return <Button className="w-full">Sign in</Button>;
+    return <Button className="w-full">Sign up</Button>;
   }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Welcome back</CardTitle>
-          <CardDescription>
-            Login with your Apple or Google account
-          </CardDescription>
+          <CardTitle className="text-xl">Welcome to Payturismo</CardTitle>
+          <CardDescription>Register a new user</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -99,15 +114,7 @@ export function SignInForm({
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <div className="flex items-center">
-                            <FormLabel>Password</FormLabel>
-                            <a
-                              href="#"
-                              className="ml-auto text-sm underline-offset-4 hover:underline"
-                            >
-                              Forgot your password?
-                            </a>
-                          </div>
+                          <FormLabel>Password</FormLabel>
                           <FormControl>
                             <Input type="password" {...field} />
                           </FormControl>
@@ -116,15 +123,49 @@ export function SignInForm({
                       )}
                     />
                   </div>
-                  <SignInButton />
+                  <div className="grid gap-2">
+                    <FormField
+                      control={form.control}
+                      name="role"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Role</FormLabel>
+                          <FormControl>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select a role" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  <SelectLabel>Role</SelectLabel>
+                                  {getUserRoleOptions().map(
+                                    ({ label, value }) => (
+                                      <SelectItem key={value} value={value}>
+                                        {label}
+                                      </SelectItem>
+                                    )
+                                  )}
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <SignUpButton />
                 </div>
                 <div className="text-center text-sm">
-                  Don&apos;t have an account?{" "}
+                  Already have an account?{" "}
                   <Link
-                    to={routes.signUp}
+                    to={routes.signIn}
                     className="underline underline-offset-4"
                   >
-                    Sign up
+                    Sign in
                   </Link>
                 </div>
               </div>
