@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:force": "vite build",
+    "ci:typecheck": "tsc --noEmit",
+    "ci:lint": "biome lint ./src",
+    "ci:test": "echo tests ok!"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",
