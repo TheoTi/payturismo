@@ -11,6 +11,7 @@ import { Eye, MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ActionDialogDelete } from "./ActionDelete";
+import { RoleProtected } from "@/views/components/RoleProtected";
 
 interface IDropdownActionsProps {
   agency: IAgency;
@@ -61,16 +62,18 @@ export function DropdownActions({
           >
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {
-              setIsOpenDialog((prevstate) => ({
-                ...prevstate,
-                deleteDialog: true,
-              }));
-            }}
-          >
-            Delete
-          </DropdownMenuItem>
+          <RoleProtected requiredRole="admin">
+            <DropdownMenuItem
+              onClick={() => {
+                setIsOpenDialog((prevstate) => ({
+                  ...prevstate,
+                  deleteDialog: true,
+                }));
+              }}
+            >
+              Delete
+            </DropdownMenuItem>
+          </RoleProtected>
         </DropdownMenuContent>
       </DropdownMenu>
 

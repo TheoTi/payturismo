@@ -25,6 +25,7 @@ interface IAuthContextValue {
   signIn(signInDTO: ISignInDTO): Promise<void>;
   signUp(signUpDTO: ISignUpDTO): Promise<void>;
   signOut(): void;
+  hasPermission: (requiredRole: IAuthUser["role"]) => boolean;
 }
 
 export const AuthContext = createContext({} as IAuthContextValue);
@@ -52,6 +53,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
     setSignedIn(true);
   }, []);
 
+  const hasPermission = useCallback(
+    (requiredRole: IAuthUser["role"]) => {
+      if (!user) return false;
+      return user.role === requiredRole;
+    },
+    [user]
+  );
+
   const signUp = useCallback(async ({ email, password, role }: ISignUpDTO) => {
     await AuthService.signUp({
       email,
@@ -72,9 +81,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
       signedIn,
       signIn,
       signOut,
+      hasPermission,
       signUp,
     }),
-    [user, signedIn, signIn, signOut, signUp]
+    [user, signedIn, signIn, signOut, signUp, hasPermission]
   );
 
   console.log(value);
