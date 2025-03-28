@@ -12,4 +12,6 @@ RUN npm install -g prisma
 
 EXPOSE 3333
 
+RUN sleep 10
+
 CMD ["npm", "run", "dev"]
