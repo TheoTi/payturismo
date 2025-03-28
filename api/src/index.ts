@@ -8,6 +8,7 @@ import cors from "cors";
 
 import { adminRoutes } from "./http/routes/adminRoutes";
 import { publicRoutes } from "./http/routes/publicRoutes";
+import { errorHandler } from "./http/middlewares/errorHandlerMiddleware";
 
 const app = express();
 
@@ -20,5 +21,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument as any));
 
 app.use(adminRoutes);
 app.use(publicRoutes);
+
+app.use(errorHandler);
 
 export { app };
