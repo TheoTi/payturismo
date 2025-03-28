@@ -11,9 +11,14 @@ import { UpdateAgency } from "../../usecases/agencies/UpdateAgency";
 
 export class AdminController {
   async listAgencies(req: Request, res: Response) {
+    const { search = "", status = "" } = req.query;
+
     const litAgenciesUseCase = new ListAgencies();
 
-    const agencies = await litAgenciesUseCase.execute();
+    const agencies = await litAgenciesUseCase.execute({
+      search: search as string,
+      status: status as string,
+    });
 
     res.status(200).json({
       data: agencies,

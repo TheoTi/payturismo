@@ -19,6 +19,10 @@ const swaggerDocument = yaml.load(fs.readFileSync("./openapi.yaml", "utf8"));
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument as any));
 
+app.get("/", (rq, rs) => {
+  rs.json({ ok: true });
+});
+
 app.use(adminRoutes);
 app.use(publicRoutes);
 
