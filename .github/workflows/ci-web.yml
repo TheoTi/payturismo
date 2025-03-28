@@ -1,0 +1,43 @@
+name: Payturismo Web CI
+
+on:
+  push:
+    paths:
+      - "web/**"
+      - ".github/workflows/web-ci.yml"
+    branches: [main, dev]
+  pull_request:
+    paths:
+      - "web/**"
+      - ".github/workflows/web-ci.yml"
+    branches: [main, dev]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+          cache: "yarn"
+
+      - name: Install dependencies
+        working-directory: ./web
+        run: yarn install --frozen-lockfile
+
+      - name: Linting
+        working-directory: ./web
+        run: yarn ci:lint
+
+      - name: Typecheck
+        working-directory: ./web
+        run: yarn ci:typecheck
+
+      - name: Tests
+        working-directory: ./web
+        run: yarn ci:test

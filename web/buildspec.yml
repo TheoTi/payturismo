@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+
+  pre_build:
+    commands:
+      - yarn install --frozen-lockfile
+
+  build:
+    commands:
+      - yarn build:force
+
+  post_build:
+    commands:
+      - aws s3 sync --delete ./dist s3://${DEPLOY_BUCKET}
+      - aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_ID} --paths /index.html

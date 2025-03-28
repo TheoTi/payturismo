@@ -1,4 +1,5 @@
 import { env } from "../config/env";
+import { RoleKeys } from "../constants/userRole";
 import { HttpClient } from "./utils/HttpClient";
 
 export interface ISignInDTO {
@@ -6,10 +7,10 @@ export interface ISignInDTO {
   password: string;
 }
 
-interface ISignUpDTO {
+export interface ISignUpDTO {
   email: string;
   password: string;
-  username: string;
+  role: RoleKeys;
 }
 
 interface ISignInResponse {
@@ -44,11 +45,11 @@ class AuthService {
     };
   }
 
-  async signUp({ email, username, password }: ISignUpDTO) {
-    return this.httpClient.post("/users/sign-up", {
+  async signUp({ email, password, role }: ISignUpDTO) {
+    return this.httpClient.post("/register/:", {
       data: {
         email,
-        username,
+        role,
         password,
       },
     });

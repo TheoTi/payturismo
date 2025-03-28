@@ -79,6 +79,23 @@ export class HttpClient {
       return config;
     });
 
+    httpClient.interceptors.response.use(
+      (value) => {
+        if (value.status < 200 || value.status > 399) {
+          throw new APIError(response, value.data);
+        }
+
+        return value;
+      },
+      (error) => {
+        if (error?.status === 401) {
+          window.location.pathname = "/sign-in";
+          localStorage.removeItem(storageKeys.accessToken);
+          localStorage.removeItem(storageKeys.user);
+        }
+      }
+    );
+
     const response = await httpClient.request<Response>({
       baseURL: `${this.baseURL}${path}`,
       data: options?.data,
@@ -86,12 +103,6 @@ export class HttpClient {
       headers: headers,
     });
 
-    const { status, data } = response;
-
-    if (status < 200 || status > 399) {
-      throw new APIError(response, data);
-    }
-
-    return data;
+    return response?.data;
   }
 }
