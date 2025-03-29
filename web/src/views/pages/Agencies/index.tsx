@@ -1,4 +1,5 @@
 import { routes } from "@/app/Router/routes";
+import { useAgency } from "@/app/hooks/useAgency";
 import { ThemeSwitcher } from "@/views/components/ThemeSwitcher";
 import { Separator } from "@/views/components/ui/separator";
 import { SidebarTrigger } from "@/views/components/ui/sidebar";
@@ -12,12 +13,12 @@ import {
   BreadcrumbSeparator,
 } from "@views/components/ui/breadcrumb";
 import { Slash } from "lucide-react";
-import { AgenciesDataTable } from "./components/AgenciesDataTable";
-import { columns } from "./components/AgenciesDataTable/columns";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { useAgency } from "@/app/hooks/useAgency";
+import { AgenciesDataTable } from "./components/AgenciesDataTable";
+import { columns } from "./components/AgenciesDataTable/columns";
 import { CreateAgencyDialog } from "./components/CreateAgencyDialog";
+import { Loader } from "@/views/layout/Loader";
 
 export function Agencies() {
   const { agencies, isLoading, listAgencies, deleteAgency, createAgency } =
@@ -69,13 +70,17 @@ export function Agencies() {
             isLoading={isLoading}
           />
         </div>
-        <AgenciesDataTable
-          columns={columns({
-            deleteAgency,
-            isLoading,
-          })}
-          data={agencies}
-        />
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <AgenciesDataTable
+            columns={columns({
+              deleteAgency,
+              isLoading,
+            })}
+            data={agencies}
+          />
+        )}
       </section>
     </>
   );

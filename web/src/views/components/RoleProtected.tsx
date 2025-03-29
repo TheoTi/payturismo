@@ -1,20 +1,20 @@
-import { useAuth } from "@/app/hooks/useAuth";
-import { ReactNode } from "react";
+import { useAuth } from '@/app/hooks/useAuth'
+import { ReactNode } from 'react'
 
 export function RoleProtected({
-  children,
-  requiredRole,
-  fallback = null,
+	children,
+	requiredRole,
+	fallback = null,
 }: {
-  children: ReactNode;
-  requiredRole: "admin" | "analyst";
-  fallback?: ReactNode;
+	children: ReactNode
+	requiredRole: 'admin' | 'analyst'
+	fallback?: ReactNode
 }) {
-  const { hasPermission } = useAuth();
+	const { hasPermission } = useAuth()
 
-  if (!hasPermission(requiredRole)) {
-    return fallback;
-  }
+	if (!hasPermission(requiredRole)) {
+		return fallback
+	}
 
-  return <>{children}</>;
+	return <>{children}</>
 }

@@ -93,6 +93,8 @@ export class HttpClient {
           localStorage.removeItem(storageKeys.accessToken);
           localStorage.removeItem(storageKeys.user);
         }
+
+        throw new Error(error?.response?.data?.message);
       }
     );
 

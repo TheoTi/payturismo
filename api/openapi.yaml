@@ -1,0 +1,523 @@
+openapi: 3.0.3
+info:
+  title: Payturismo API
+  description: An API for managing turism agencies
+  version: 1.0.0
+security:
+  - {}
+tags:
+  - name: Agency
+  - name: User
+servers:
+  - url: http://localhost:3333
+    description: The development server.
+paths:
+  "/login/:":
+    post:
+      tags:
+        - User
+      description: Authenticate user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: john.doe@mail.com
+                password:
+                  type: string
+                  minLength: 8
+                  example: Admin@2024
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          email:
+                            type: string
+                          role:
+                            type: string
+                        required:
+                          - id
+                          - email
+                          - role
+                    required:
+                      - token
+                      - user
+                required:
+                  - data
+  "/register/:":
+    post:
+      tags:
+        - User
+      description: Register user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  pattern: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$
+                  minLength: 8
+                role:
+                  type: string
+                  enum:
+                    - admin
+                    - analyst
+              required:
+                - email
+                - password
+                - role
+      responses:
+        "200":
+          description: 201 Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      email:
+                        type: string
+                      passwordHash:
+                        type: string
+                      role:
+                        type: string
+                      createdAt:
+                        type: string
+                      updatedAt:
+                        type: string
+                    required:
+                      - id
+                      - email
+                      - passwordHash
+                      - role
+                      - createdAt
+                      - updatedAt
+                required:
+                  - data
+  "/agency/:":
+    post:
+      tags:
+        - Agency
+      description: Create an agency
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                fantasyName:
+                  type: string
+                  minLength: 3
+                  maxLength: 255
+                corporateName:
+                  type: string
+                  minLength: 3
+                  maxLength: 255
+                cnpj:
+                  type: string
+                  pattern: ^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$
+                stateRegistration:
+                  type: string
+                  maxLength: 20
+                municipalRegistration:
+                  type: string
+                  maxLength: 20
+                status:
+                  type: string
+                  enum: &a1
+                    - active
+                    - inactive
+                    - pending
+                    - suspended
+                  default: pending
+                foundationDate:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                  minLength: 8
+                  maxLength: 20
+                website:
+                  type: string
+                  format: uri
+              required:
+                - fantasyName
+                - corporateName
+                - cnpj
+                - email
+                - phone
+      responses:
+        "201":
+          description: 201 Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        fantasyName:
+                          type: string
+                          minLength: 3
+                          maxLength: 255
+                        corporateName:
+                          type: string
+                          minLength: 3
+                          maxLength: 255
+                        cnpj:
+                          type: string
+                          pattern: ^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$
+                        stateRegistration:
+                          type: string
+                          maxLength: 20
+                        municipalRegistration:
+                          type: string
+                          maxLength: 20
+                        status:
+                          type: string
+                          enum: *a1
+                          default: pending
+                        foundationDate:
+                          type: string
+                        email:
+                          type: string
+                          format: email
+                        phone:
+                          type: string
+                          minLength: 8
+                          maxLength: 20
+                        website:
+                          type: string
+                          format: uri
+                      required:
+                        - fantasyName
+                        - corporateName
+                        - cnpj
+                        - status
+                        - email
+                        - phone
+                required:
+                  - data
+    get:
+      tags:
+        - Agency
+      description: List all agencies
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        fantasyName:
+                          type: string
+                          minLength: 3
+                          maxLength: 255
+                        corporateName:
+                          type: string
+                          minLength: 3
+                          maxLength: 255
+                        cnpj:
+                          type: string
+                          pattern: ^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$
+                        stateRegistration:
+                          type: string
+                          maxLength: 20
+                        municipalRegistration:
+                          type: string
+                          maxLength: 20
+                        status:
+                          type: string
+                          enum: *a1
+                          default: pending
+                        foundationDate:
+                          type: string
+                        email:
+                          type: string
+                          format: email
+                        phone:
+                          type: string
+                          minLength: 8
+                          maxLength: 20
+                        website:
+                          type: string
+                          format: uri
+                      required:
+                        - fantasyName
+                        - corporateName
+                        - cnpj
+                        - status
+                        - email
+                        - phone
+                required:
+                  - data
+  "/agency/{id}/:":
+    get:
+      tags:
+        - Agency
+      description: Find agency by id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      fantasyName:
+                        type: string
+                        minLength: 3
+                        maxLength: 255
+                      corporateName:
+                        type: string
+                        minLength: 3
+                        maxLength: 255
+                      cnpj:
+                        type: string
+                        pattern: ^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$
+                      stateRegistration:
+                        type: string
+                        maxLength: 20
+                      municipalRegistration:
+                        type: string
+                        maxLength: 20
+                      status:
+                        type: string
+                        enum: *a1
+                        default: pending
+                      foundationDate:
+                        type: string
+                      email:
+                        type: string
+                        format: email
+                      phone:
+                        type: string
+                        minLength: 8
+                        maxLength: 20
+                      website:
+                        type: string
+                        format: uri
+                    required:
+                      - fantasyName
+                      - corporateName
+                      - cnpj
+                      - status
+                      - email
+                      - phone
+                required:
+                  - data
+    delete:
+      tags:
+        - Agency
+      description: Delete an agency
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+      responses:
+        "204":
+          description: 204 No content
+    put:
+      tags:
+        - Agency
+      description: Update an agency
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fantasyName:
+                  type: string
+                  minLength: 3
+                  maxLength: 255
+                corporateName:
+                  type: string
+                  minLength: 3
+                  maxLength: 255
+                cnpj:
+                  type: string
+                  pattern: ^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$
+                stateRegistration:
+                  type: string
+                  maxLength: 20
+                municipalRegistration:
+                  type: string
+                  maxLength: 20
+                status:
+                  type: string
+                  enum:
+                    - active
+                    - inactive
+                    - pending
+                    - suspended
+                  default: pending
+                foundationDate:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                  minLength: 8
+                  maxLength: 20
+                website:
+                  type: string
+                  format: uri
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      fantasyName:
+                        type: string
+                        minLength: 3
+                        maxLength: 255
+                      corporateName:
+                        type: string
+                        minLength: 3
+                        maxLength: 255
+                      cnpj:
+                        type: string
+                        pattern: ^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$
+                      stateRegistration:
+                        type: string
+                        maxLength: 20
+                      municipalRegistration:
+                        type: string
+                        maxLength: 20
+                      status:
+                        type: string
+                        enum: *a1
+                        default: pending
+                      foundationDate:
+                        type: string
+                      email:
+                        type: string
+                        format: email
+                      phone:
+                        type: string
+                        minLength: 8
+                        maxLength: 20
+                      website:
+                        type: string
+                        format: uri
+                    required:
+                      - fantasyName
+                      - corporateName
+                      - cnpj
+                      - status
+                      - email
+                      - phone
+                required:
+                  - data
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+

@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { AgencyStatus, IAgency } from "../interfaces/IAgency";
-import AgencyService from "../services/AgencyService";
 import { AgencyCreateInput, AgencyUpdateFormValues } from "../schemas/agency";
+import AgencyService, { IFindOptions } from "../services/AgencyService";
 
 export function useAgency() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -20,10 +20,10 @@ export function useAgency() {
     }
   }
 
-  async function listAgencies() {
+  async function listAgencies(filters?: IFindOptions) {
     try {
       setIsLoading(true);
-      const agencies = await AgencyService.listAgencies();
+      const agencies = await AgencyService.listAgencies(filters);
 
       if (agencies && Array.isArray(agencies.data)) {
         setAgencies(agencies.data);

@@ -1,20 +1,21 @@
-import { Header } from "@/views/layout/Header";
-import { AgenciesSection } from "./AgenciesSection";
-import { SidebarTrigger } from "@/views/components/ui/sidebar";
-import { Separator } from "@/views/components/ui/separator";
+import { routes } from "@/app/Router/routes";
+import { useAgency } from "@/app/hooks/useAgency";
+import { ThemeSwitcher } from "@/views/components/ThemeSwitcher";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbPage,
 } from "@/views/components/ui/breadcrumb";
-import { ThemeSwitcher } from "@/views/components/ThemeSwitcher";
-import { Link } from "react-router-dom";
-import { routes } from "@/app/Router/routes";
-import { ExternalLink, Link2 } from "lucide-react";
-import { useAgency } from "@/app/hooks/useAgency";
+import { Separator } from "@/views/components/ui/separator";
+import { SidebarTrigger } from "@/views/components/ui/sidebar";
+import { Header } from "@/views/layout/Header";
+import { ExternalLink } from "lucide-react";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { AgenciesSection } from "./AgenciesSection";
+import { Loader } from "@/views/layout/Loader";
 
 export function Dashboard() {
   const { agencies, isLoading, listAgencies } = useAgency();
@@ -51,7 +52,7 @@ export function Dashboard() {
       </Header>
 
       {isLoading ? (
-        <h1>carregando...</h1>
+        <Loader />
       ) : (
         <>
           <AgenciesSection agencies={agencies} />

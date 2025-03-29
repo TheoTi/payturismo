@@ -1,13 +1,56 @@
-import { Input } from "@/views/components/ui/input";
-import { Search } from "lucide-react";
+import { useAgency } from "@/app/hooks/useAgency";
+import { IAgency } from "@/app/interfaces/IAgency";
+import { IFindOptions } from "@/app/services/AgencyService";
 import { Badge } from "@/views/components/ui/badge";
+import { Input } from "@/views/components/ui/input";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { IAgency } from "@/app/interfaces/IAgency";
+import { toast } from "sonner";
 
-export function AgenciesSection({ agencies }: { agencies: IAgency[] }) {
-  const lastThreeAgencies = agencies.slice(-3);
+interface IAgenciesSectionProps {
+  agencies: IAgency[];
+}
+
+export function AgenciesSection({ agencies }: IAgenciesSectionProps) {
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(""); // Estado para debounce
+
+  const { listAgencies, agencies: agenciesFound } = useAgency();
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await listAgencies({ search: debouncedSearch });
+      } catch (err: any) {
+        toast.error("Failed to get agencies", {
+          description: err?.message,
+        });
+      }
+    };
+
+    if (debouncedSearch !== "") {
+      fetchData();
+    }
+  }, [debouncedSearch, agencies]);
+
+  const lastThreeAgencies = useMemo(() => {
+    if (debouncedSearch !== "") {
+      return agenciesFound.slice(-3);
+    }
+
+    return agencies.slice(-3);
+  }, [debouncedSearch, agenciesFound, agencies]);
 
   return (
     <section className="flex flex-1 flex-col items-center w-full space-y-8 p-4 pt-6 mt-16 md:mt-32">
@@ -21,6 +64,8 @@ export function AgenciesSection({ agencies }: { agencies: IAgency[] }) {
             className="pl-10 py-6 border-none shadow-sm bg-gray-50 focus-visible:ring-2 focus-visible:ring-primary"
             placeholder="Search by agency name, CNPJ or email..."
             type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
       </div>

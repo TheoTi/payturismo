@@ -3,6 +3,10 @@ import { IAgency, ICreateAgencyInput } from "../interfaces/IAgency";
 import { AgencyCreateInput, AgencyUpdateFormValues } from "../schemas/agency";
 import { HttpClient } from "./utils/HttpClient";
 
+export interface IFindOptions {
+  [field: string]: string;
+}
+
 class AgencyService {
   private http: HttpClient;
 
@@ -11,11 +15,15 @@ class AgencyService {
   }
 
   async getAgency(id: string) {
-    return this.http.get<{ data: IAgency }>(`/agency/${id}/:`);
+    return this.http.get<{ data: IAgency }>(`/agency/${id}/:`, {});
   }
 
-  async listAgencies() {
-    return this.http.get<{ data: IAgency[] }>(`/agency/:`);
+  async listAgencies(filters?: IFindOptions) {
+    const queryString = filters
+      ? "?" + new URLSearchParams(filters).toString()
+      : "";
+
+    return this.http.get<{ data: IAgency[] }>(`/agency/:${queryString}`);
   }
 
   async updateAgency(id: string, body: AgencyUpdateFormValues) {
